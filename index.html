@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Enter Code</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+  <style>
+    :root{--bg:#0f172a;--card:#0b1220;--accent:#7c3aed;--muted:rgba(230,238,248,0.8)}
+    *{box-sizing:border-box}
+    body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;font-family:Inter,system-ui,Segoe UI,Roboto;background:linear-gradient(180deg,#071028,#0b1220);color:var(--muted);padding:24px}
+    .wrap{width:100%;max-width:540px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));padding:28px;border-radius:14px;box-shadow:0 10px 40px rgba(2,6,23,0.6);border:1px solid rgba(255,255,255,0.04);text-align:center}
+    h1{margin:0 0 12px;font-size:20px;color:#e6eef8}
+    p{margin:0 0 18px;color:rgba(230,238,248,0.75)}
+    .field{display:flex;gap:10px;justify-content:center;align-items:center}
+    input[type=text]{padding:12px 14px;border-radius:10px;border:1px solid rgba(255,255,255,0.06);background:transparent;color:var(--muted);min-width:260px;font-weight:600;letter-spacing:1px}
+    button{padding:11px 16px;border-radius:10px;border:none;background:linear-gradient(90deg,var(--accent),#06b6d4);color:white;font-weight:700;cursor:pointer}
+    .msg{margin-top:14px;height:22px;font-size:14px}
+    .error{color:#ff7a7a}
+    .success{color:#8ff7d6}
+
+    /* shake animation for wrong code */
+    @keyframes shake{0%{transform:translateX(0)}20%{transform:translateX(-6px)}40%{transform:translateX(6px)}60%{transform:translateX(-4px)}80%{transform:translateX(4px)}100%{transform:translateX(0)}}
+
+    .shake{animation:shake 540ms cubic-bezier(.36,.07,.19,.97)}
+
+    small.note{display:block;margin-top:10px;color:rgba(230,238,248,0.55)}
+  </style>
+</head>
+<body>
+  <div class="wrap" role="main">
+    <h1>Enter the Access Code</h1>
+    <p>You have to put on the code you can check on <a href="https://renel041725.github.io/How-To-Play-Find-That-/code.html">here</a></p>
+    <div class="field">
+      <input id="codeInput" type="text" inputmode="latin" autocomplete="off" placeholder="Enter code here" aria-label="Code input" />
+      <button id="checkBtn">Check</button>
+    </div>
+
+    <div class="msg" id="message" aria-live="polite"></div>
+    <h2>Or Scan This QR Code.</h2>
+    <img height="300" src="qr-code.png">
+    <h2>Or to waste time, go to the How to Play "Find That!" website and click on "Get code on morsy"!</h2>
+  </div>
+
+  <script>
+    (function(){
+      const CORRECT = 'ILST1000TAMFCYM';
+      const input = document.getElementById('codeInput');
+      const btn = document.getElementById('checkBtn');
+      const msg = document.getElementById('message');
+      const wrap = document.querySelector('.wrap');
+
+      function showMessage(text, type){
+        msg.textContent = text;
+        msg.className = 'msg ' + (type === 'ok' ? 'success' : 'error');
+        if(type === 'bad'){
+          // shake and clear input after a short delay
+          wrap.classList.remove('shake');
+          void wrap.offsetWidth; // force reflow
+          wrap.classList.add('shake');
+        }
+      }
+
+      function checkCode(){
+        const val = input.value.trim();
+        if(!val){ showMessage('Please enter a code.', 'bad'); return; }
+        if(val === CORRECT){
+          showMessage('Code accepted — redirecting...', 'ok');
+          // small delay so user can read message, then go to morsy.html
+          setTimeout(()=> window.location.href = 'morsy.html', 700);
+        } else {
+          showMessage('Wrong code. Try again.', 'bad');
+        }
+      }
+
+      btn.addEventListener('click', checkCode);
+      input.addEventListener('keydown', (e)=>{
+        if(e.key === 'Enter'){
+          e.preventDefault();
+          checkCode();
+        }
+      });
+
+    })();
+  </script>
+</body>
+</html>
